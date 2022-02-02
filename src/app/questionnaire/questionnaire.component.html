@@ -1,0 +1,167 @@
+<div class="container">
+  <section>
+    <form
+      id="questionnaireForm"
+      [formGroup]="questionnaireForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <header class="header mt-3">
+            <h4>Questionnaire</h4>
+          </header>
+          <ng-container *ngFor="let question of questions">
+            <ng-container [ngSwitch]="question.type">
+              <div class="form-group mb-3" *ngSwitchCase="'string'">
+                <label for="{{ question.linkId }}">{{ question.text }}</label>
+                <input
+                  type="input"
+                  class="form-control"
+                  id="{{ question.linkId }}"
+                  [formControlName]="question.linkId"
+                />
+                <div
+                  class="validation-error"
+                  *ngIf="
+                    questionnaireForm.get(question.linkId)?.dirty ||
+                    questionnaireForm.get(question.linkId)?.touched
+                  "
+                >
+                  <span
+                    class="error"
+                    *ngIf="!questionnaireForm.get(question.linkId)?.valid"
+                    >Field is required
+                  </span>
+                </div>
+              </div>
+              <div class="form-group mb-3" *ngSwitchCase="'boolean'">
+                {{ question.text }}
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="{{ question.linkId }}"
+                    id="{{ question.linkId }}-yes"
+                    value="true"
+                    [formControlName]="question.linkId"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="{{ question.linkId }}-yes"
+                    >Yes</label
+                  >
+                </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="{{ question.linkId }}"
+                    id="{{ question.linkId }}-no"
+                    value="false"
+                    [formControlName]="question.linkId"
+                  />
+                  <label class="form-check-label" for="{{ question.linkId }}-no"
+                    >No</label
+                  >
+                </div>
+
+                <div
+                  class="validation-error"
+                  *ngIf="
+                    questionnaireForm.get(question.linkId)?.dirty ||
+                    questionnaireForm.get(question.linkId)?.touched
+                  "
+                >
+                  <span *ngIf="!questionnaireForm.get(question.linkId)?.valid"
+                    >Field is required
+                  </span>
+                </div>
+              </div>
+              <div class="form-group mb-3" *ngSwitchCase="'date'">
+                <label for="{{ question.linkId }}">{{ question.text }}</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="{{ question.linkId }}"
+                  [formControlName]="question.linkId"
+                />
+
+                <div
+                  class="validation-error"
+                  *ngIf="
+                    questionnaireForm.get(question.linkId)?.dirty ||
+                    questionnaireForm.get(question.linkId)?.touched
+                  "
+                >
+                  <span *ngIf="!questionnaireForm.get(question.linkId)?.valid"
+                    >Field is required
+                  </span>
+                </div>
+              </div>
+              <div class="form-group mb-3" *ngSwitchCase="'choice'">
+                <label for="{{ question.linkId }}">{{ question.text }}</label>
+                <select
+                  class="form-control"
+                  id="{{ question.linkId }}"
+                  [formControlName]="question.linkId"
+                >
+                  <option value="">Select</option>
+                  <option
+                    *ngFor="let ctrlOption of question.option"
+                    value="{{ ctrlOption.valueCoding.code }}"
+                  >
+                    {{ ctrlOption.valueCoding.display }}
+                  </option>
+                </select>
+
+                <div
+                  class="validation-error"
+                  *ngIf="
+                    questionnaireForm.get(question.linkId)?.dirty ||
+                    questionnaireForm.get(question.linkId)?.touched
+                  "
+                >
+                  <span *ngIf="!questionnaireForm.get(question.linkId)?.valid"
+                    >Field is required
+                  </span>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <div class="form-group">
+            <button
+              [disabled]="!questionnaireForm.valid"
+              type="submit"
+              class="btn btn-primary"
+            >
+              Submit Form
+            </button>
+            <span> (All fields are mandatory)</span>
+          </div>
+
+          <div *ngIf="formSubmitted && questionnaireForm.valid" class="mt-3">
+            <hr>
+            <h4>Submitted Values</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Question</td>
+                        <td>Answer</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of submittedValues">
+                        <td>{{item.linkId}}</td>
+                        <td>{{item.text}}</td>
+                        <td>{{item.answer}}</td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
